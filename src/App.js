@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
   const [showAddTask, setShowAddTask] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const url = process.env.REACT_APP_API_ADDRESS;
 
   useEffect(() => {
     const getTasks = async () => {
@@ -17,24 +18,24 @@ function App() {
     };
 
     getTasks();
-  }, []);
+  });
 
   const fetchTasks = async () => {
-    const res = await fetch("http://localhost:5000/tasks");
+    const res = await fetch(`${url}/tasks`);
     const data = await res.json();
 
     return data;
   };
 
   const fetchTask = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks/${id}`);
+    const res = await fetch(`${url}/tasks/${id}`);
     const data = await res.json();
 
     return data;
   };
 
   const addTask = async (task) => {
-    const res = await fetch(`http://localhost:5000/tasks`, {
+    const res = await fetch(`${url}/tasks`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -48,7 +49,7 @@ function App() {
   };
 
   const deleteTask = async (id) => {
-    await fetch(`http://localhost:5000/tasks/${id}`, { method: "DELETE" });
+    await fetch(`${url}/tasks/${id}`, { method: "DELETE" });
 
     setTasks(tasks.filter((task) => task.id !== id));
   };
@@ -56,7 +57,7 @@ function App() {
   const toggleReminder = async (id) => {
     const taskToToggle = await fetchTask(id);
     const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    const res = await fetch(`${url}/tasks/${id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
